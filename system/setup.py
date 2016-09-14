@@ -75,9 +75,9 @@ notes:
     - The filter option filters only the first level subkey below ansible_facts.
     - If the target host is Windows, you will not currently have the ability to use
       C(filter) as this is provided by a simpler implementation of the module.
-    - If the target host is Windows you can now use C(fact_path). Make sure that this path 
-      exists on the target host. Files in this path MUST be PowerShell scripts (``*.ps1``) and 
-      their output must be formattable in JSON (Ansible will take care of this). Test the 
+    - If the target host is Windows you can now use C(fact_path). Make sure that this path
+      exists on the target host. Files in this path MUST be PowerShell scripts (``*.ps1``) and
+      their output must be formattable in JSON (Ansible will take care of this). Test the
       output of your scripts.
       This option was added in Ansible 2.1.
 author:
@@ -118,6 +118,7 @@ def main():
         argument_spec = dict(
             gather_subset=dict(default=["all"], required=False, type='list'),
             gather_timeout=dict(default=10, required=False, type='int'),
+            gather_network_interfaces=dict(default=None, required=False, type='list'),
             filter=dict(default="*", required=False),
             fact_path=dict(default='/etc/ansible/facts.d', required=False),
         ),
