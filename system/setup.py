@@ -111,6 +111,7 @@ def main():
     module = AnsibleModule(
         argument_spec = dict(
             gather_subset=dict(default=["all"], required=False, type='list'),
+            gather_network_interfaces=dict(default=None, required=False, type='list'),
             filter=dict(default="*", required=False),
             fact_path=dict(default='/etc/ansible/facts.d', required=False),
         ),
