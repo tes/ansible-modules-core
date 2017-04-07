@@ -104,22 +104,23 @@ EXAMPLES = '''
 import ConfigParser
 import sys
 import os
+import re
 
 # ==============================================================
 # match_opt
 
 def match_opt(option, line):
   option = re.escape(option)
-  return re.match('%s *=' % option, line) \
-    or re.match('# *%s *=' % option, line) \
-    or re.match('; *%s *=' % option, line)
+  return re.match(' *%s( |\t)*=' % option, line) \
+    or re.match('# *%s( |\t)*=' % option, line) \
+    or re.match('; *%s( |\t)*=' % option, line)
 
 # ==============================================================
 # match_active_opt
 
 def match_active_opt(option, line):
   option = re.escape(option)
-  return re.match('%s *=' % option, line)
+  return re.match(' *%s( |\t)*=' % option, line)
 
 # ==============================================================
 # do_ini
@@ -156,8 +157,12 @@ def do_ini(module, filename, section=None, option=None, value=None, state='prese
             if within_section:
                 if state == 'present':
                     # insert missing option line at the end of the section
-                    ini_lines.insert(index, assignment_format % (option, value))
-                    changed = True
+                    for i in range(index, 0, -1):
+                        # search backwards for previous non-blank or non-comment line
+                        if not re.match(r'^[ \t]*([#;].*)?$', ini_lines[i - 1]):
+                            ini_lines.insert(i, assignment_format % (option, value))
+                            changed = True
+                            break
                 elif state == 'absent' and not option:
                     # remove the entire section
                     del ini_lines[section_start:index]
